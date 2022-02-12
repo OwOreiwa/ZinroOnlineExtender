@@ -1,10 +1,13 @@
 人狼Onlineえくすてんだー
 ====
 人狼Online（ https://zinro.net/ ）が使いにくいので自分で機能を追加する試みです
+現在1つの機能しかないですが他にも追加する予定です
 
 Install
 ----
-Chromeに拡張機能として読み込みます
+Chromeに拡張機能として読み込みます  
+1. [Chromeの拡張機能タブを開く](chrome://extensions/)
+2. 左上の「パッケージ化されていない拡張機能を読み込む」からZinroOnlineExtenderの中身を入れたフォルダを選択する
 
 Usage
 ----
