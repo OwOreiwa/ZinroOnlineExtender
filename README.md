@@ -1,6 +1,6 @@
 人狼Onlineえくすてんだー
 ====
-人狼Online（ https://zinro.net/ ）が使いにくいので自分で機能を追加する試みです
+人狼Online（ https://zinro.net/ ）が使いにくいので自分で機能を追加する試みです  
 現在1つの機能しかないですが他にも追加する予定です
 
 Install
