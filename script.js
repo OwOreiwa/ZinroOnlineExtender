@@ -14,11 +14,9 @@ function RemoveRoom_Chat(){
     for(var i=0; label.length>i; i++){
         if(label[i].textContent === undefined) continue;
         if(label[i].textContent.includes('雑談系')){
-            //console.log(label[i].textContent)
             label[i].parentElement.parentElement.remove();
         }
         if(label[i].textContent.includes('身内')){
-            //console.log(label[i].textContent)
             label[i].parentElement.parentElement.remove();
         }
     }
