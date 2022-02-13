@@ -15,6 +15,10 @@ Usage
 （精度は悪いので複数回実行してください）
 * RMメニューにワンボタン配役設定機能が追加されます
 
+Author
+----
+微細くん◆MICRO.DO.88p　/　OwOreiwa
+
 License
 ----
 The source code is licensed MIT. The website content is licensed CC BY 4.0,see LICENSE.
