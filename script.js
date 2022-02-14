@@ -7,7 +7,35 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	}
 });
 
+window.addEventListener("load", LowlightRoom_Chat, false);
+window.addEventListener("load", LowlightRoom_Friends, false);
 window.addEventListener("load", addRoleSettings, false);
+
+//------------------------------
+
+function LowlightRoom_Chat(){
+    var label = document.getElementsByClassName('label');
+
+    for(var i=0; label.length>i; i++){
+        if(label[i].textContent === undefined) continue;
+        if(label[i].textContent.includes('雑談系')){
+            label[i].parentElement.style.background = "gray";
+        }
+        if(label[i].textContent.includes('身内')){
+            label[i].parentElement.style.background = "gray";
+        }
+    }
+}
+
+function LowlightRoom_Friends(){
+    var icon = document.getElementsByClassName('icon-lock');
+
+    if(icon.length != 0){
+        for(var i=0; icon.length>i; i++){
+            icon[i].parentElement.parentElement.style.background = "gray";
+        }
+    }
+}
 
 function RemoveRoom_Chat(){
     var label = document.getElementsByClassName('label');
