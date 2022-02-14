@@ -1,6 +1,6 @@
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request == "Action") {
-        for(var i=1; i<5; i++){
+        for(let i=1; i<5; i++){
             RemoveRoom_Friends();
             RemoveRoom_Chat();
         }
@@ -9,7 +9,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 
 window.addEventListener("load", LowlightRoom_Chat, false);
 window.addEventListener("load", LowlightRoom_Friends, false);
-window.addEventListener("load", HighlightDisconnected, false);
+$("body").click(HighlightDisconnected);
 window.addEventListener("load", addRoleSettings, false);
 
 //------------------------------
@@ -17,7 +17,7 @@ window.addEventListener("load", addRoleSettings, false);
 function LowlightRoom_Chat(){
     var label = document.getElementsByClassName('label');
 
-    for(var i=0; label.length>i; i++){
+    for(let i=0; label.length>i; i++){
         if(label[i].textContent === undefined) continue;
         if(label[i].textContent.includes('雑談系')){
             label[i].parentElement.style.background = "gray";
@@ -32,7 +32,7 @@ function LowlightRoom_Friends(){
     var icon = document.getElementsByClassName('icon-lock');
 
     if(icon.length != 0){
-        for(var i=0; icon.length>i; i++){
+        for(let i=0; icon.length>i; i++){
             icon[i].parentElement.parentElement.style.background = "gray";
         }
     }
@@ -41,7 +41,7 @@ function LowlightRoom_Friends(){
 function RemoveRoom_Chat(){
     var label = document.getElementsByClassName('label');
 
-    for(var i=0; label.length>i; i++){
+    for(let i=0; label.length>i; i++){
         if(label[i].textContent === undefined) continue;
         if(label[i].textContent.includes('雑談系')){
             label[i].parentElement.parentElement.remove();
@@ -56,7 +56,7 @@ function RemoveRoom_Friends(){
     var icon = document.getElementsByClassName('icon-lock');
 
     if(icon.length != 0){
-        for(var i=0; icon.length>i; i++){
+        for(let i=0; icon.length>i; i++){
             icon[i].parentElement.parentElement.parentElement.remove();
         }
     }
@@ -67,8 +67,10 @@ function HighlightDisconnected(){
 
     if(icon.length != 0){
         icon[0].parentElement.parentElement.parentElement.parentElement.parentElement.style.borderCollapse = "collapse";
-        for(var i=0; icon.length>i; i++){
-            if(!icon[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("CPU")){
+        for(let i=0; icon.length>i; i++){
+            if(!icon[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("CPU") &&
+            !icon[i].parentElement.parentElement.textContent.includes("観戦者")){
+                console.log(icon[i].parentElement.parentElement.textContent);
                 icon[i].parentElement.parentElement.parentElement.style.border = "2px solid red";
                 icon[i].parentElement.parentElement.parentElement.style.opacity = "25%";
             }
