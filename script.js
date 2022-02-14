@@ -70,7 +70,6 @@ function HighlightDisconnected(){
         for(let i=0; icon.length>i; i++){
             if(!icon[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("CPU") &&
             !icon[i].parentElement.parentElement.textContent.includes("観戦者")){
-                console.log(icon[i].parentElement.parentElement.textContent);
                 icon[i].parentElement.parentElement.parentElement.style.border = "2px solid red";
                 icon[i].parentElement.parentElement.parentElement.style.opacity = "25%";
             }
