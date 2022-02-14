@@ -89,7 +89,7 @@ function preventMash(){
 function addRoleSettings(){
     'use strict';
     const addBtn = (h, title, func) => {
-        return $('<button style="width: 55px; margin: 2px;" type="button" id="extenderBtn">').text(title).click(func).appendTo(h);
+        return $('<button style="width: 55px; margin: 2px;" type="button" id="extenderBtn">').text(title).click(func).click(preventMash).appendTo(h);
     }
 
     const h = $("<div>").css({
@@ -125,7 +125,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(0);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", false);   //役欠けなし
-        preventMash();
     });
     addBtn(h, "12a猫", () => {
         $('select[name=job_1]').val(3);     //人狼
@@ -147,7 +146,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(0);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", false);   //役欠けなし
-        preventMash();
     });
     addBtn(h, "14d猫", () => {
         $('select[name=job_1]').val(3);     //人狼
@@ -169,7 +167,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(0);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", false);   //役欠けなし
-        preventMash();
     });
 
     h.append('<h3 style="width: 50%; margin-left: auto; margin-right: auto; border-bottom: 1px solid gray"></h3>');
@@ -194,7 +191,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(0);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", false);   //役欠けなし
-        preventMash();
     });
     addBtn(h, "12b", () => {
         $('select[name=job_1]').val(2);     //人狼
@@ -216,7 +212,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(0);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", false);   //役欠けなし
-        preventMash();
     });
     addBtn(h, "17a", () => {
         $('select[name=job_1]').val(3);     //人狼
@@ -238,7 +233,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(0);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", false);   //役欠けなし
-        preventMash();
     });
 
     h.append('<h3 style="width: 50%; margin-left: auto; margin-right: auto; border-bottom: 1px solid gray"></h3>');
@@ -263,7 +257,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(0);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", false);   //役欠けなし
-        preventMash();
     });
     addBtn(h, "夏至", () => {
         $('select[name=job_1]').val(1);     //人狼
@@ -285,7 +278,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(0);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", true);   //役欠けなし
-        preventMash();
     });
     addBtn(h, "微細", () => {
         $('select[name=job_1]').val(2);     //人狼
@@ -307,7 +299,6 @@ function addRoleSettings(){
         $('select[name=job_14]').val(1);    //狼憑き
         $('select[name=job_15]').val(0);    //ものまね
         $('input[name=yakukakenashi]').prop("checked", false);   //役欠けなし
-        preventMash();
     });
 
     h.append('<h3 style="margin: 10px"></h3>');
