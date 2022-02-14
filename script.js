@@ -9,6 +9,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 
 window.addEventListener("load", LowlightRoom_Chat, false);
 window.addEventListener("load", LowlightRoom_Friends, false);
+window.addEventListener("load", HighlightDisconnected, false);
 window.addEventListener("load", addRoleSettings, false);
 
 //------------------------------
@@ -57,6 +58,20 @@ function RemoveRoom_Friends(){
     if(icon.length != 0){
         for(var i=0; icon.length>i; i++){
             icon[i].parentElement.parentElement.parentElement.remove();
+        }
+    }
+}
+
+function HighlightDisconnected(){
+    var icon = document.getElementsByClassName('icon-ban-circle');
+
+    if(icon.length != 0){
+        icon[0].parentElement.parentElement.parentElement.parentElement.parentElement.style.borderCollapse = "collapse";
+        for(var i=0; icon.length>i; i++){
+            if(!icon[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("CPU")){
+                icon[i].parentElement.parentElement.parentElement.style.border = "2px solid red";
+                icon[i].parentElement.parentElement.parentElement.style.opacity = "25%";
+            }
         }
     }
 }
