@@ -10,6 +10,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 window.addEventListener("load", LowlightRoom_Chat, false);
 window.addEventListener("load", LowlightRoom_Friends, false);
 $("body").click(HighlightDisconnected);
+$("body").click(HighlightTroll);
 window.addEventListener("load", addRoleSettings, false);
 
 $('.btn:contains("開始")').removeAttr("href");
@@ -36,51 +37,19 @@ $('.btn:contains("開始")').click(function(){
 //------------------------------
 
 function LowlightRoom_Chat(){
-    var label = document.getElementsByClassName('label');
-
-    for(let i=0; label.length>i; i++){
-        if(label[i].textContent === undefined) continue;
-        if(label[i].textContent.includes('雑談系')){
-            label[i].parentElement.style.background = "gray";
-        }
-        if(label[i].textContent.includes('身内')){
-            label[i].parentElement.style.background = "gray";
-        }
-    }
+    $('.label:contains("雑談系"), .label:contains("身内")').parent().css("background", "gray");
 }
 
 function LowlightRoom_Friends(){
-    var icon = document.getElementsByClassName('icon-lock');
-
-    if(icon.length != 0){
-        for(let i=0; icon.length>i; i++){
-            icon[i].parentElement.parentElement.style.background = "gray";
-        }
-    }
+    $('.icon-lock').parent().parent().css("background", "gray");
 }
 
 function RemoveRoom_Chat(){
-    var label = document.getElementsByClassName('label');
-
-    for(let i=0; label.length>i; i++){
-        if(label[i].textContent === undefined) continue;
-        if(label[i].textContent.includes('雑談系')){
-            label[i].parentElement.parentElement.remove();
-        }
-        if(label[i].textContent.includes('身内')){
-            label[i].parentElement.parentElement.remove();
-        }
-    }
+    $('.label:contains("雑談系"), .label:contains("身内")').parent().remove();
 }
 
 function RemoveRoom_Friends(){
-    var icon = document.getElementsByClassName('icon-lock');
-
-    if(icon.length != 0){
-        for(let i=0; icon.length>i; i++){
-            icon[i].parentElement.parentElement.parentElement.remove();
-        }
-    }
+    $('.icon-lock').parent().parent().remove();
 }
 
 function HighlightDisconnected(){
@@ -93,6 +62,21 @@ function HighlightDisconnected(){
             !icon[i].parentElement.parentElement.textContent.includes("観戦者")){
                 icon[i].parentElement.parentElement.parentElement.style.border = "2px solid red";
                 icon[i].parentElement.parentElement.parentElement.style.opacity = "25%";
+            }
+        }
+    }
+}
+
+function HighlightTroll(){
+    var playerName = document.getElementsByClassName('icon-signal');
+    
+    if(playerName.length != 0){
+        for(let i=0; playerName.length>i; i++){
+            if(playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("田代") ||
+            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("松潤")){
+                playerName[0].parentElement.parentElement.parentElement.parentElement.parentElement.style.borderCollapse = "collapse";
+                playerName[i].parentElement.parentElement.parentElement.style.border = "2px solid purple";
+                playerName[i].parentElement.parentElement.parentElement.style.opacity = "25%";
             }
         }
     }
