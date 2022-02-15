@@ -12,6 +12,27 @@ window.addEventListener("load", LowlightRoom_Friends, false);
 $("body").click(HighlightDisconnected);
 window.addEventListener("load", addRoleSettings, false);
 
+$('.btn:contains("開始")').removeAttr("href");
+$('.btn:contains("開始")').click(function(){
+    $("body").trigger("click")
+    var capa = $("select[name=teiin]").val();
+    if($("#all_players").children("div").text().slice(-3).includes(capa) != 1){
+        var ans = window.confirm("現在のプレイヤー数が定員を満たしていません。\r\nゲームを開始しますか？");
+        if(ans){
+            window.location.href = "/m/player.php?mode=start";
+        }
+    }
+    else if($("table").css("border-collapse") == "collapse"){
+        var ans = window.confirm("回線落ちしているプレイヤーが存在します。\r\nゲームを開始しますか？");
+        if(ans){
+            window.location.href = "/m/player.php?mode=start";
+        }
+    }
+    else{
+        window.location.href = "/m/player.php?mode=start";
+    }
+});
+
 //------------------------------
 
 function LowlightRoom_Chat(){
