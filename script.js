@@ -1,3 +1,7 @@
+window.addEventListener("load", function(){
+    if(window.location.href == "https://zinro.net/m/end.php?ad=inter") window.location.href = "https://zinro.net/"
+}, false);
+
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request == "Action") {
         var Ck = Cookies.get("extender_RoomList");
