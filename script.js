@@ -1,55 +1,73 @@
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request == "Action") {
-        for(let i=1; i<5; i++){
-            RemoveRoom_Friends();
+        var Ck = Cookies.get("extender_RoomList");
+        if(Ck == "Default" || Ck === undefined){
+            Cookies.set("extender_RoomList", "Lowlight", {expires:1});
+            LowlightRoom_Chat();
+            LowlightRoom_Friends();
+        }
+        else if(Ck == "Lowlight"){
+            Cookies.set("extender_RoomList", "Remove", {expires:1});
             RemoveRoom_Chat();
+            RemoveRoom_Friends();
+        }
+        else if(Ck == "Remove"){
+            Cookies.set("extender_RoomList", "Default", {expires:1});
+            DefaultRoom_Chat();
+            DefaultRoom_Friends();
         }
 	}
 });
 
-window.addEventListener("load", LowlightRoom_Chat, false);
-window.addEventListener("load", LowlightRoom_Friends, false);
+var Ck = Cookies.get("extender_RoomList");
+if(Ck == "Default" || Ck === undefined){
+    window.addEventListener("load", DefaultRoom_Chat, false);
+    window.addEventListener("load", DefaultRoom_Friends, false);
+}
+else if(Ck == "Lowlight"){
+    window.addEventListener("load", LowlightRoom_Chat, false);
+    window.addEventListener("load", LowlightRoom_Friends, false);
+}
+else if(Ck == "Remove"){
+    window.addEventListener("load", RemoveRoom_Chat, false);
+    window.addEventListener("load", RemoveRoom_Friends, false);
+}
+
 $("body").click(HighlightDisconnected);
 $("body").click(HighlightTroll);
 window.addEventListener("load", addRoleSettings, false);
 
 $('.btn:contains("開始")').removeAttr("href");
-$('.btn:contains("開始")').click(function(){
-    $("body").trigger("click")
-    var capa = $("select[name=teiin]").val();
-    if($("#all_players").children("div").text().slice(-3).includes(capa) != 1){
-        var ans = window.confirm("現在のプレイヤー数が定員を満たしていません。\r\nゲームを開始しますか？");
-        if(ans){
-            window.location.href = "/m/player.php?mode=start";
-        }
-    }
-    else if($("table").css("border-collapse") == "collapse"){
-        var ans = window.confirm("回線落ちしているプレイヤーが存在します。\r\nゲームを開始しますか？");
-        if(ans){
-            window.location.href = "/m/player.php?mode=start";
-        }
-    }
-    else{
-        window.location.href = "/m/player.php?mode=start";
-    }
-});
+$('.btn:contains("開始")').click(confirmStartGame);
 
 //------------------------------
 
-function LowlightRoom_Chat(){
-    $('.label:contains("雑談系"), .label:contains("身内")').parent().css("background", "gray");
+function DefaultRoom_Chat(){
+    $('.label:contains("雑談系"), .label:contains("身内")').parent().css({
+        "background": "",
+        "display": "",
+    });
+}
+function DefaultRoom_Friends(){
+    $('.icon-lock').parent().parent().css({
+        "background": "",
+        "display": "",
+    });
 }
 
+function LowlightRoom_Chat(){
+    $('.label:contains("雑談系")').parent().css("background", "darkgray");
+    $('.label:contains("身内")').parent().css("background", "gray");
+}
 function LowlightRoom_Friends(){
-    $('.icon-lock').parent().parent().css("background", "gray");
+    $('.icon-lock').parent().parent().css("background", "dimgray");
 }
 
 function RemoveRoom_Chat(){
-    $('.label:contains("雑談系"), .label:contains("身内")').parent().remove();
+    $('.label:contains("雑談系"), .label:contains("身内")').parent().css("display", "none");
 }
-
 function RemoveRoom_Friends(){
-    $('.icon-lock').parent().parent().remove();
+    $('.icon-lock').parent().parent().css("display", "none");
 }
 
 function HighlightDisconnected(){
@@ -82,13 +100,20 @@ function HighlightTroll(){
     }
 }
 
-var timer = false;
-function preventMash(){
-    if (timer != false)  clearTimeout(timer);
-	timer = setTimeout(function() {
-		$('input[value=村設定変更]').trigger("click");
-		timer = false;
-	}, 2000);
+function confirmStartGame(){
+    $("body").trigger("click")
+    var capa = $("select[name=teiin]").val();
+    if($("#all_players").children("div").text().slice(-3).includes(capa) != 1){
+        var ans = window.confirm("現在のプレイヤー数が定員を満たしていません。\r\nゲームを開始しますか？");
+        if(ans) window.location.href = "/m/player.php?mode=start";
+    }
+    else if($("table").css("border-collapse") == "collapse"){
+        var ans = window.confirm("回線落ちしているプレイヤーが存在します。\r\nゲームを開始しますか？");
+        if(ans) window.location.href = "/m/player.php?mode=start";
+    }
+    else{
+        window.location.href = "/m/player.php?mode=start";
+    }
 }
 
 function addRoleSettings(){
@@ -308,3 +333,12 @@ function addRoleSettings(){
 
     h.append('<h3 style="margin: 10px"></h3>');
 };
+
+var timer = false;
+function preventMash(){
+    if (timer != false)  clearTimeout(timer);
+	timer = setTimeout(function() {
+		$('input[value=村設定変更]').trigger("click");
+		timer = false;
+	}, 1000);
+}
