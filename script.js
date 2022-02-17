@@ -47,7 +47,7 @@ $('.btn:contains("開始")').click(confirmStartGame);
 //------------------------------
 
 $('.btn:contains("メモ")').after('<a class="btn" onclick="$(\'#extender_FT\').toggle();">占い先</a>');
-$('#memo').after('<div id="extender_FT" style="margin-top: 5px; display: none; background-color: darkgray; border: 4px solid gray; border-radius: 20px; padding: 10px; margin-bottom: 0px;"><table id="extender_FT_table" class="table table-striped table-bordered tbl"></table></div>');
+$('#memo').after('<div id="extender_FT" style="margin-top: 5px; display: none; background-color: darkgray; border: 4px solid gray; border-radius: 20px; padding: 10px; margin-bottom: 10px;"><table id="extender_FT_table" class="table table-striped table-bordered tbl"></table></div>');
 $('#extender_FT').prepend('<h3 style="width: 100%; margin-left: auto; margin-right: auto; border-bottom: 2px solid gray"></h3>');
 $('#extender_FT').prepend('<input type="text" id="extender_FT_addRow_name" style="margin-bottom: 0px;"></input>');
 $('#extender_FT').prepend('<button type="button" id="extender_FT_addRow">占い師追加</button>');
@@ -153,11 +153,21 @@ function HighlightTroll(){
 function confirmStartGame(){
     $("body").trigger("click")
     var capa = $("select[name=teiin]").val();
-    if($("#all_players").children("div").text().slice(-3).includes(capa) != 1){
+    var playerName = $('span[style=""][data-toggle="modal"]').map(function(){
+        return $(this).text();
+    }).get();
+    var playerNum = playerName.length;
+    if(playerNum != capa){
         var ans = window.confirm("現在のプレイヤー数が定員を満たしていません。\r\nゲームを開始しますか？");
-        if(ans) window.location.href = "/m/player.php?mode=start";
+        if(ans){
+            if($("table[cellspacing=0]").css("border-collapse") == "collapse"){
+                var ans = window.confirm("回線落ちしているプレイヤーが存在します。\r\nゲームを開始しますか？");
+                if(ans) window.location.href = "/m/player.php?mode=start";
+            }
+            else window.location.href = "/m/player.php?mode=start";
+        }
     }
-    else if($("table").css("border-collapse") == "collapse"){
+    else if($("table[cellspacing=0]").css("border-collapse") == "collapse"){
         var ans = window.confirm("回線落ちしているプレイヤーが存在します。\r\nゲームを開始しますか？");
         if(ans) window.location.href = "/m/player.php?mode=start";
     }
