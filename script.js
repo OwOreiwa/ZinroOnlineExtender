@@ -1,5 +1,5 @@
 window.addEventListener("load", function(){
-    if(window.location.href == "https://zinro.net/m/end.php?ad=inter") window.location.href = "https://zinro.net/"
+    if(window.location.href == "https://zinro.net/m/end.php?ad=inter" || window.location.href == "https://zinro.net/m/end.php?message=%E6%9D%91%E3%81%8B%E3%82%89%E9%80%80%E5%87%BA%E3%81%97%E3%81%BE%E3%81%97%E3%81%9F") window.location.href = "https://zinro.net/"
 }, false);
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
@@ -43,6 +43,52 @@ window.addEventListener("load", addRoleSettings, false);
 
 $('.btn:contains("開始")').removeAttr("href");
 $('.btn:contains("開始")').click(confirmStartGame);
+
+//------------------------------
+
+$('.btn:contains("メモ")').after('<a class="btn" onclick="$(\'#extender_FT\').toggle();">占い先</a>');
+$('#memo').after('<div id="extender_FT" style="margin-top: 5px; display: none; background-color: darkgray; border: 4px solid gray; border-radius: 20px; padding: 10px; margin-bottom: 0px;"><table id="extender_FT_table" class="table table-striped table-bordered tbl"></table></div>');
+$('#extender_FT').prepend('<h3 style="width: 100%; margin-left: auto; margin-right: auto; border-bottom: 2px solid gray"></h3>');
+$('#extender_FT').prepend('<input type="text" id="extender_FT_addRow_name" style="margin-bottom: 0px;"></input>');
+$('#extender_FT').prepend('<button type="button" id="extender_FT_addRow">占い師追加</button>');
+$('#extender_FT_table').append('<thead id="extender_FT_head"><tr id="extender_FT_head_tr"></tr></thead>');
+$('#extender_FT_table').append('<tbody id="extender_FT_body"></tbody>');
+$('.btn:contains("占い先")').click(function(){
+    var playerName = $('span[style=""][data-toggle="modal"]').map(function(){
+        return $(this).text();
+    }).get();
+    $('#extender_FT_head_tr').children().remove();
+    $.each(playerName, function(){
+        $('#extender_FT_head_tr').children().remove();
+    })
+    $('#extender_FT_head_tr').append('<th></th>');
+    $.each(playerName, function(){
+        $('#extender_FT_head_tr').append('<th>'+this+'</th>');
+    })
+});
+$('#extender_FT_addRow').click(function(){
+    var addRowName = $('#extender_FT_addRow_name').val();
+    if(addRowName){
+        var playerName = $('span[style=""][data-toggle="modal"]').map(function(){
+            return $(this).text();
+        }).get();
+        $('#extender_FT_body').append('<tr></tr>');
+        $('#extender_FT_addRow_name').val("");
+        $('#extender_FT_body tr:last').append('<td id="extender_FT_body_name">'+addRowName+'</td>');
+        $.each(playerName, function(){
+            $('#extender_FT_body tr:last').append('<td id="extender_FT_body_input"></td>');
+        })
+    }
+    $('#extender_FT_addRow_name').focus();
+});
+$('#extender_FT_table').on("click", "#extender_FT_body_name", function(){
+    $(this).parent().remove();
+});
+$('#extender_FT_table').on("click", "#extender_FT_body_input", function(){
+    if(!$(this).text().length) $(this).text("〇");
+    else if($(this).text().includes("〇")) $(this).text("●");
+    else if($(this).text().includes("●")) $(this).text("");
+});
 
 //------------------------------
 
