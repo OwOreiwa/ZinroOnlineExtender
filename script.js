@@ -41,12 +41,12 @@ $("body").click(HighlightDisconnected);
 $("body").click(HighlightTroll);
 window.addEventListener("load", addRoleSettings, false);
 
-$('.btn:contains("開始")').removeAttr("href");
-$('.btn:contains("開始")').click(confirmStartGame);
+$('.btn:contains("開始")'+'.btn:not(.dropdown-toggle)').removeAttr("href");
+$('.btn:contains("開始")'+'.btn:not(.dropdown-toggle)').click(confirmStartGame);
 
 //------------------------------
 
-$('.btn:contains("メモ")').after('<a class="btn" onclick="$(\'#extender_FT\').toggle();">占い先</a>');
+$('.btn:contains("メモ")').after('<a class="btn" onclick="$(\'#extender_FT\').toggle();" style="margin-left: 10px;">占い先</a>');
 $('#memo').after('<div id="extender_FT" style="margin-top: 5px; display: none; background-color: darkgray; border: 4px solid gray; border-radius: 20px; padding: 10px; margin-bottom: 10px;"><table id="extender_FT_table" class="table table-striped table-bordered tbl"></table></div>');
 $('#extender_FT').prepend('<h3 style="width: 100%; margin-left: auto; margin-right: auto; border-bottom: 2px solid gray"></h3>');
 $('#extender_FT').prepend('<input type="text" id="extender_FT_addRow_name" style="margin-bottom: 0px;"></input>');
@@ -89,6 +89,29 @@ $('#extender_FT_table').on("click", "#extender_FT_body_input", function(){
     else if($(this).text().includes("〇")) $(this).text("●");
     else if($(this).text().includes("●")) $(this).text("");
 });
+
+//------------------------------
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+$('.btn:contains("占い先")').after('<a class="btn" onclick="$(\'#extender_Command\').toggle();" >コマンド</a>');
+$('#extender_FT').after('<div id="extender_Command" style="margin-top: 5px; display: none; background-color: darkgray; border: 4px solid gray; border-radius: 20px; padding: 10px; margin-bottom: 10px;"></div>');
+$('#extender_Command').append('<a class="btn">[WHO]</a>');
+$('.btn:contains("[WHO]")').click(function(){
+    var playerName = $('span[style=""][data-toggle="modal"]').map(function(){
+        return $(this).text();
+    }).get();
+    var result = playerName[getRandomInt(playerName.length)]
+    $('#extender_Command_result').text(result);
+});
+$('#extender_Command').append('<a class="btn">[DICE]</a>');
+$('.btn:contains("[DICE]")').click(function(){
+    var result = getRandomInt(100);
+    $('#extender_Command_result').text(result);
+});
+$('#extender_Command').append('<h3 style="width: 100%; margin-left: auto; margin-right: auto; border-bottom: 2px solid gray"></h3>');
+$('#extender_Command').append('<h4 id="extender_Command_result">ここに結果が表示されます。</h4>');
 
 //------------------------------
 
@@ -141,7 +164,11 @@ function HighlightTroll(){
     if(playerName.length != 0){
         for(let i=0; playerName.length>i; i++){
             if(playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("田代") ||
-            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("松潤")){
+            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("松潤") ||
+            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("木公シ閏") ||
+            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("木公氵閏") ||
+            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("まつずん") ||
+            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("まつじゅん")){
                 playerName[0].parentElement.parentElement.parentElement.parentElement.parentElement.style.borderCollapse = "collapse";
                 playerName[i].parentElement.parentElement.parentElement.style.border = "2px solid purple";
                 playerName[i].parentElement.parentElement.parentElement.style.opacity = "25%";
