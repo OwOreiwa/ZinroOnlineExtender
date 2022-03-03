@@ -7,11 +7,13 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         var Ck = Cookies.get("extender_RoomList");
         if(Ck == "Default" || Ck === undefined){
             Cookies.set("extender_RoomList", "Lowlight", {expires:1});
+            LowlightRoom_Sus();
             LowlightRoom_Chat();
             LowlightRoom_Friends();
         }
         else if(Ck == "Lowlight"){
             Cookies.set("extender_RoomList", "Remove", {expires:1});
+            LowlightRoom_Sus();
             RemoveRoom_Chat();
             RemoveRoom_Friends();
         }
@@ -29,10 +31,12 @@ if(Ck == "Default" || Ck === undefined){
     window.addEventListener("load", DefaultRoom_Friends, false);
 }
 else if(Ck == "Lowlight"){
+    window.addEventListener("load", LowlightRoom_Sus, false);
     window.addEventListener("load", LowlightRoom_Chat, false);
     window.addEventListener("load", LowlightRoom_Friends, false);
 }
 else if(Ck == "Remove"){
+    window.addEventListener("load", LowlightRoom_Sus, false);
     window.addEventListener("load", RemoveRoom_Chat, false);
     window.addEventListener("load", RemoveRoom_Friends, false);
 }
@@ -134,6 +138,11 @@ function LowlightRoom_Chat(){
 }
 function LowlightRoom_Friends(){
     $('.icon-lock').parent().parent().css("background", "dimgray");
+}
+function LowlightRoom_Sus(){
+    for(let i=20; i<=50; i++){
+        $('td:contains(' + i + '人)').css("background", "silver");
+    }
 }
 
 function RemoveRoom_Chat(){
