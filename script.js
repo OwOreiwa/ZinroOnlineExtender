@@ -152,7 +152,7 @@ $("#message").click(function(){
     $("#message div:not('#message_text')").on({
         "mouseenter": function(){
             var filterName = $(this).children(":first-child").text();
-            var filterMessages = $("#message div:not('#message_text') > .from-normal:contains(" + filterName + ")").parent();
+            var filterMessages = $("#message div:not('#message_text') > .from-normal:contains(" + filterName + "), #message div:not('#message_text') > .from-system:contains(" + filterName + ")").parent();
             var filterNewMessages = $("#message > div:not('#message_text'):first:contains(" + filterName + ")");
             $("#message div:not('#message_text')").not(this).not(filterMessages).not(filterNewMessages).css("opacity", "25%");
         },
