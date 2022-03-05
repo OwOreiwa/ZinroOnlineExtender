@@ -19,6 +19,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         }
         else if(Ck == "Remove"){
             Cookies.set("extender_RoomList", "Default", {expires:1});
+            DefaultRoom_Sus();
             DefaultRoom_Chat();
             DefaultRoom_Friends();
         }
@@ -27,6 +28,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 
 var Ck = Cookies.get("extender_RoomList");
 if(Ck == "Default" || Ck === undefined){
+    window.addEventListener("load", DefaultRoom_Sus, false);
     window.addEventListener("load", DefaultRoom_Chat, false);
     window.addEventListener("load", DefaultRoom_Friends, false);
 }
@@ -51,24 +53,49 @@ $('.btn:contains("開始")'+'.btn:not(.dropdown-toggle)').click(confirmStartGame
 //------------------------------
 
 $('.btn:contains("メモ")').after('<a class="btn" onclick="$(\'#extender_FT\').toggle();" style="margin-left: 10px;">占い先</a>');
-$('#memo').after('<div id="extender_FT" style="margin-top: 5px; display: none; background-color: darkgray; border: 4px solid gray; border-radius: 20px; padding: 10px; margin-bottom: 10px;"><table id="extender_FT_table" class="table table-striped table-bordered tbl"></table></div>');
+$('#memo').after('<div id="extender_FT" style="margin-top: 5px; display: none; background-color: darkgray; border: 4px solid gray; border-radius: 20px; padding: 10px; margin-bottom: 10px;"><table id="extender_FT_table" style="background-color: dimgray; text-align: center; width: 100%; table-layout: fixed;"></table></div>');
 $('#extender_FT').prepend('<h3 style="width: 100%; margin-left: auto; margin-right: auto; border-bottom: 2px solid gray"></h3>');
 $('#extender_FT').prepend('<input type="text" id="extender_FT_addRow_name" style="margin-bottom: 0px;"></input>');
-$('#extender_FT').prepend('<button type="button" id="extender_FT_addRow">占い師追加</button>');
-$('#extender_FT_table').append('<thead id="extender_FT_head"><tr id="extender_FT_head_tr"></tr></thead>');
-$('#extender_FT_table').append('<tbody id="extender_FT_body"></tbody>');
+$('#extender_FT').prepend('<button type="button" id="extender_FT_addRow" style="margin-left: 10px">占い師追加</button>');
+$('#extender_FT').prepend('<button type="button" id="extender_FT_saveTable" style="margin-left: 10px">表保存</button>');
+$('#extender_FT').prepend('<button type="button" id="extender_FT_createTable">表作成</button>');
+$('#extender_FT').prepend('<button type="button" id="extender_FT_deleteTable">表削除</button>');
 $('.btn:contains("占い先")').click(function(){
-    var playerName = $('span[style=""][data-toggle="modal"]').map(function(){
-        return $(this).text();
-    }).get();
-    $('#extender_FT_head_tr').children().remove();
-    $.each(playerName, function(){
+    var Ck = Cookies.get("extender_FT_table");
+    $("#extender_FT_table").empty();
+    $("#extender_FT_table").append(Ck);
+});
+$('#extender_FT_saveTable').click(function(){
+    Cookies.set("extender_FT_table", $("#extender_FT_table").html(), {expires:1});
+    window.alert("表を保存しました。");
+});
+$('#extender_FT_createTable').click(function(){
+    var ans = window.confirm("表を現在の生存プレイヤーで上書きします。\r\nよろしいですか？");
+    if(ans){
+        $('#extender_FT_table').append('<thead id="extender_FT_head"><tr id="extender_FT_head_tr"></tr></thead>');
+        $('#extender_FT_table').append('<tbody id="extender_FT_body"></tbody>');
+
+        var playerName = $('span[style=""][data-toggle="modal"]').map(function(){
+            return $(this).text();
+        }).get();
         $('#extender_FT_head_tr').children().remove();
-    })
-    $('#extender_FT_head_tr').append('<th></th>');
-    $.each(playerName, function(){
-        $('#extender_FT_head_tr').append('<th>'+this+'</th>');
-    })
+        $.each(playerName, function(){
+            $('#extender_FT_head_tr').children().remove();
+        })
+        $('#extender_FT_head_tr').append('<th></th>');
+        $.each(playerName, function(){
+            $('#extender_FT_head_tr').append('<th>'+this+'</th>');
+        })
+
+        Cookies.set("extender_FT_table", $("#extender_FT_table").html(), {expires:1});
+    }
+});
+$('#extender_FT_deleteTable').click(function(){
+    var ans = window.confirm("表を削除します。\r\nよろしいですか？");
+    if(ans){
+        $("#extender_FT_table").empty();
+        Cookies.remove("extender_FT_table");
+    }
 });
 $('#extender_FT_addRow').click(function(){
     var addRowName = $('#extender_FT_addRow_name').val();
@@ -84,14 +111,16 @@ $('#extender_FT_addRow').click(function(){
         })
     }
     $('#extender_FT_addRow_name').focus();
+    $("#extender_FT_body #extender_FT_body_input").css("border", "solid 1px");
+    $("#extender_FT_body #extender_FT_body_name").css("font-weight", "bold");
 });
 $('#extender_FT_table').on("click", "#extender_FT_body_name", function(){
     $(this).parent().remove();
 });
 $('#extender_FT_table').on("click", "#extender_FT_body_input", function(){
-    if(!$(this).text().length) $(this).text("〇");
-    else if($(this).text().includes("〇")) $(this).text("●");
-    else if($(this).text().includes("●")) $(this).text("");
+    if(!$(this).text().length) $(this).text("白");
+    else if($(this).text().includes("白")) $(this).text("黒");
+    else if($(this).text().includes("黒")) $(this).text("");
 });
 
 //------------------------------
@@ -119,68 +148,90 @@ $('#extender_Command').append('<h4 id="extender_Command_result">ここに結果�
 
 //------------------------------
 
+$("#message").click(function(){
+    $("#message div:not('#message_text')").on({
+        "mouseenter": function(){
+            var filterName = $(this).children(":first-child").text();
+            var filterMessages = $("#message div:not('#message_text') > .from-normal:contains(" + filterName + ")").parent();
+            var filterNewMessages = $("#message > div:not('#message_text'):first:contains(" + filterName + ")");
+            $("#message div:not('#message_text')").not(this).not(filterMessages).not(filterNewMessages).css("opacity", "25%");
+        },
+        "mouseleave": function(){
+            $("#message div:not('#message_text')").css("opacity", "100%");
+        }
+    })
+});
+
+//------------------------------
+
 function DefaultRoom_Chat(){
-    $('.label:contains("雑談系"), .label:contains("身内")').parent().css({
+    $(".label:contains('雑談系'), .label:contains('身内')").parent().css({
         "background": "",
         "display": "",
     });
 }
 function DefaultRoom_Friends(){
-    $('.icon-lock').parent().parent().css({
+    $(".icon-lock").parent().parent().css({
         "background": "",
         "display": "",
     });
 }
+function DefaultRoom_Sus(){
+    for(let i=20; i<=50; i++){
+        $("td:contains(" + i + "人)").css("background", "");
+    }
+}
 
 function LowlightRoom_Chat(){
-    $('.label:contains("雑談系")').parent().css("background", "darkgray");
-    $('.label:contains("身内")').parent().css("background", "gray");
+    $(".label:contains('雑談系')").parent().css("background", "darkgray");
+    $(".label:contains('身内')").parent().css("background", "gray");
 }
 function LowlightRoom_Friends(){
-    $('.icon-lock').parent().parent().css("background", "dimgray");
+    $(".icon-lock").parent().parent().css("background", "dimgray");
 }
 function LowlightRoom_Sus(){
     for(let i=20; i<=50; i++){
-        $('td:contains(' + i + '人)').css("background", "silver");
+        $("td:contains(" + i + "人)").css("background", "silver");
     }
 }
 
 function RemoveRoom_Chat(){
-    $('.label:contains("雑談系"), .label:contains("身内")').parent().css("display", "none");
+    $(".label:contains('雑談系'), .label:contains('身内')").parent().css("display", "none");
 }
 function RemoveRoom_Friends(){
-    $('.icon-lock').parent().parent().css("display", "none");
+    $(".icon-lock").parent().parent().css("display", "none");
 }
 
 function HighlightDisconnected(){
-    var icon = document.getElementsByClassName('icon-ban-circle');
+    var icon = $(".icon-ban-circle");
 
     if(icon.length != 0){
-        icon[0].parentElement.parentElement.parentElement.parentElement.parentElement.style.borderCollapse = "collapse";
-        for(let i=0; icon.length>i; i++){
-            if(!icon[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("CPU") &&
-            !icon[i].parentElement.parentElement.textContent.includes("観戦者")){
-                icon[i].parentElement.parentElement.parentElement.style.border = "2px solid red";
-                icon[i].parentElement.parentElement.parentElement.style.opacity = "25%";
-            }
+        $(icon[0]).closest(".table").css("borderCollapse", "collapse");
+        for(let i=0; i<icon.length; i++){
+            $(icon[i]).closest("tr").attr("id", "Disconnected");
+            $(icon[i]).closest("tr").find(".label:contains('CPU')").closest("tr").attr("id", "CPU");
         }
+        $("tbody #Disconnected").css({
+            "border": "2px solid red",
+            "opacity": "25%",
+        });
     }
 }
 
 function HighlightTroll(){
-    var playerName = document.getElementsByClassName('icon-signal');
-    
-    if(playerName.length != 0){
-        for(let i=0; playerName.length>i; i++){
-            if(playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("田代") ||
-            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("松潤") ||
-            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("木公シ閏") ||
-            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("木公氵閏") ||
-            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("まつずん") ||
-            playerName[i].parentElement.parentElement.parentElement.firstElementChild.firstElementChild.textContent.includes("まつじゅん")){
-                playerName[0].parentElement.parentElement.parentElement.parentElement.parentElement.style.borderCollapse = "collapse";
-                playerName[i].parentElement.parentElement.parentElement.style.border = "2px solid purple";
-                playerName[i].parentElement.parentElement.parentElement.style.opacity = "25%";
+    var playerName = $(".icon-signal").closest("tr").find("span[data-toggle='modal']");
+    var trollName = ["田代","たしろ","松潤","まつじゅん","まつずん","木公シ閏","木公氵閏"];
+
+    for(let i=0; i<playerName.length; i++){
+        for(let j=0; j<trollName.length; j++){
+            if(~$(playerName[i]).text().indexOf(trollName[j])){
+                $(playerName[i]).closest("table").css({
+                    "borderCollapse": "collapse",
+                });
+                $(playerName[i]).closest("tr").css({
+                    "border": "2px solid purple",
+                    "opacity": "25%",
+                });
             }
         }
     }
@@ -193,17 +244,19 @@ function confirmStartGame(){
         return $(this).text();
     }).get();
     var playerNum = playerName.length;
+    var disconnectedPlayer = $("tbody #Disconnected");
+    
     if(playerNum != capa){
         var ans = window.confirm("現在のプレイヤー数が定員を満たしていません。\r\nゲームを開始しますか？");
         if(ans){
-            if($("table[cellspacing=0]").css("border-collapse") == "collapse"){
+            if(disconnectedPlayer.length != 0){
                 var ans = window.confirm("回線落ちしているプレイヤーが存在します。\r\nゲームを開始しますか？");
                 if(ans) window.location.href = "/m/player.php?mode=start";
             }
             else window.location.href = "/m/player.php?mode=start";
         }
     }
-    else if($("table[cellspacing=0]").css("border-collapse") == "collapse"){
+    else if(disconnectedPlayer.length != 0){
         var ans = window.confirm("回線落ちしているプレイヤーが存在します。\r\nゲームを開始しますか？");
         if(ans) window.location.href = "/m/player.php?mode=start";
     }
